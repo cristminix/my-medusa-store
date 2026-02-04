@@ -31,5 +31,24 @@ module.exports = defineConfig({
         ],
       },
     },
+    {
+      resolve: "@medusajs/medusa/fulfillment",
+      options: {
+        providers: [
+          {
+            resolve: "@medusajs/medusa/fulfillment-manual",
+            id: "manual",
+          },
+          {
+            resolve: "./src/modules/internal-shipping",
+            id: "internal-shipping",
+            options: {
+              base_rate: 10000, // Base rate: 10000 cents = 100.00
+              rate_per_kg: 5000, // Per kg rate: 5000 cents = 50.00
+            },
+          },
+        ],
+      },
+    },
   ],
 })
