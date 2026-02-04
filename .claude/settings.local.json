@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__plugin_medusa-dev_MedusaDocs__ask_medusa_question"
+    ]
+  }
+}
