@@ -78,12 +78,53 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
           subject: "Reset Your Password",
           html: this.getPasswordResetTemplate(data),
         }
+      case "email-verification":
+        return {
+          subject: "Verifikasi Email Anda",
+          html: this.getEmailVerificationTemplate(data),
+        }
       default:
         return {
           subject: "Notification",
           html: `<p>${JSON.stringify(data)}</p>`,
         }
     }
+  }
+
+  private getEmailVerificationTemplate(data: Record<string, unknown>): string {
+    const verificationUrl = data.verification_url as string
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verifikasi Email Anda</title>
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5; margin: 0; padding: 20px;">
+  <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; padding: 40px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+    <h1 style="color: #1a1a1a; font-size: 24px; margin-bottom: 24px; text-align: center;">
+      Verifikasi Email Anda
+    </h1>
+    <p style="color: #4a4a4a; font-size: 16px; line-height: 1.6; margin-bottom: 24px;">
+      Terima kasih telah mendaftar. Silakan klik tombol di bawah ini untuk memverifikasi alamat email Anda:
+    </p>
+    <div style="text-align: center; margin-bottom: 24px;">
+      <a href="${verificationUrl}" style="display: inline-block; background-color: #000000; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 6px; font-size: 16px; font-weight: 500;">
+        Verifikasi Email
+      </a>
+    </div>
+    <p style="color: #6a6a6a; font-size: 14px; line-height: 1.6;">
+      Jika Anda tidak membuat akun ini, Anda dapat mengabaikan email ini dengan aman.
+    </p>
+    <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 32px 0;">
+    <p style="color: #9a9a9a; font-size: 12px; text-align: center;">
+      Email ini dikirim secara otomatis. Mohon jangan membalas.
+    </p>
+  </div>
+</body>
+</html>
+`
   }
 
   private getPasswordResetTemplate(data: Record<string, unknown>): string {

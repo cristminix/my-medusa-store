@@ -1,0 +1,2 @@
+ Medusa tidak menghapus cart di client secara otomatis karena backend tidak bisa menyentuh LocalStorage browser. Developer frontend bertanggung jawab untuk menulis perintah "lupakan    
+  cart ID ini" setelah pesanan berhasil dibuat.
