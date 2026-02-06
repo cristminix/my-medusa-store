@@ -68,5 +68,35 @@ module.exports = defineConfig({
         ],
       },
     },
+    {
+      resolve: "@medusajs/medusa/payment",
+      options: {
+        providers: [
+          {
+            resolve: "./src/modules/cod-payment",
+            id: "cod",
+            options: {
+              // Optional: Maximum order amount allowed for COD (e.g., 5000000 = 5,000,000)
+              // max_amount: 5000000,
+              // Optional: COD fee to be added (e.g., 5000 = 5,000)
+              // cod_fee: 5000,
+            },
+          },
+          {
+            resolve: "./src/modules/wire-transfer",
+            id: "wire-transfer",
+            options: {
+              bank_name: process.env.WIRE_TRANSFER_BANK_NAME || "Bank Central Asia",
+              account_number: process.env.WIRE_TRANSFER_ACCOUNT_NUMBER || "1234567890",
+              account_holder: process.env.WIRE_TRANSFER_ACCOUNT_HOLDER || "PT Your Company",
+              // Optional: SWIFT code for international transfers
+              // swift_code: "CENAIDJA",
+              // Optional: Additional instructions
+              // instructions: "Please include your order number in the transfer description",
+            },
+          },
+        ],
+      },
+    },
   ],
 })
