@@ -1,34 +1,64 @@
 {
-    "login": {
-        "title": "Selamat datang di Pawon Store",
-        "hint": "Masuk untuk mengakses area akun"
+  "login": {
+    "title": "Selamat datang di Pawon Store",
+    "hint": "Masuk untuk mengakses area akun"
+  },
+  "invite": {
+    "title": "Selamat datang di Pawon Store",
+    "successHint": "Mulai gunakan Pawon Store Admin sekarang juga.",
+    "successAction": "Mulai Pawon Store Admin"
+  },
+  "statuses": {
+    "authorized": "Disetujui",
+    "partiallyAuthorized": "Disetujui Sebagian",
+    "captured": "Diterima",
+    "partiallyCaptured": "Diterima Sebagian",
+    "refunded": "Dikembalikan",
+    "partiallyRefunded": "Dikembalikan Sebagian",
+    "pending": "Tertunda",
+    "canceled": "Dibatalkan"
+  },
+  "orders": {
+    "fulfillment": {
+      "awaitingShipping": "Menunggu pengiriman",
+      "awaitingPickup": "Menunggu pengambilan",
+      "awaitingDelivery": "Menunggu pengantaran",
+      "shipped": "Dikirim",
+      "delivered": "Diterima",
+      "canceled": "Dibatalkan"
     },
-    "invite": {
-        "title": "Selamat datang di Pawon Store",
-        "successHint": "Mulai gunakan Pawon Store Admin sekarang juga.",
-        "successAction": "Mulai Pawon Store Admin"
+    "refund": {
+      "systemPaymentDesc": "Satu atau lebih pembayaran Anda adalah pembayaran sistem. Perlu diketahui, pengambilan dan pengembalian dana tidak ditangani oleh Pawon Store untuk pembayaran tersebut."
     },
-    "orders": {
-        "refund": {
-            "systemPaymentDesc": "Satu atau lebih pembayaran Anda adalah pembayaran sistem. Perlu diketahui, pengambilan dan pengembalian dana tidak ditangani oleh Pawon Store untuk pembayaran tersebut."
-        }
-    },
-    "workflowExecutions": {
-        "subtitle": "Lihat dan pantau eksekusi alur kerja di aplikasi Pawon Store Anda."
-    },
-    "notifications": {
-        "accessibility": {
-            "description": "Notifikasi tentang aktivitas Pawon Store akan dicantumkan di sini."
-        }
-    },
-    "apiKeyManagement": {
-        "create": {
-            "createSecretHint": "Buat kunci API rahasia baru untuk mengakses Pawon Store API sebagai pengguna admin terautentikasi."
-        }
-    },
-    "profile": {
-        "edit": {
-            "usageInsightsHint": "Bagikan wawasan penggunaan dan bantu kami meningkatkan Pawon Store. Anda dapat membaca lebih lanjut tentang apa yang kami kumpulkan dan bagaimana kami menggunakannya di <0>dokumentasi</0> kami."
-        }
+    "payment": {
+      "authorized": "Disetujui",
+      "partiallyAuthorized": "Disetujui Sebagian",
+      "captured": "Ditangkap",
+      "partiallyCaptured": "Ditangkap Sebagian",
+      "refunded": "Dikembalikan",
+      "partiallyRefunded": "Dikembalikan Sebagian",
+      "pending": "Tertunda",
+      "canceled": "Dibatalkan",
+      "notPaid": "Belum Dibayar",
+      "awaiting": "Menunggu"
     }
+  },
+  "workflowExecutions": {
+    "subtitle": "Lihat dan pantau eksekusi alur kerja di aplikasi Pawon Store Anda."
+  },
+  "notifications": {
+    "accessibility": {
+      "description": "Notifikasi tentang aktivitas Pawon Store akan dicantumkan di sini."
+    }
+  },
+  "apiKeyManagement": {
+    "create": {
+      "createSecretHint": "Buat kunci API rahasia baru untuk mengakses Pawon Store API sebagai pengguna admin terautentikasi."
+    }
+  },
+  "profile": {
+    "edit": {
+      "usageInsightsHint": "Bagikan wawasan penggunaan dan bantu kami meningkatkan Pawon Store. Anda dapat membaca lebih lanjut tentang apa yang kami kumpulkan dan bagaimana kami menggunakannya di <0>dokumentasi</0> kami."
+    }
+  }
 }

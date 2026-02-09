@@ -110,14 +110,15 @@ class WireTransferPaymentProviderService extends AbstractPaymentProvider<WireTra
 
     this.logger_.info(`[Wire Transfer] Authorized payment ${data?.id}`)
 
-    // Wire transfer payments require manual verification
-    // Return "pending" status until admin confirms the transfer was received
+    // Wire transfer: Return "authorized" to allow order creation
+    // Payment will remain in "authorized" state until admin manually captures
+    // after confirming the bank transfer was received
     return {
-      status: "pending",
+      status: "authorized" as PaymentSessionStatus,
       data: {
         ...data,
-        status: "pending",
-        note: "Awaiting wire transfer confirmation",
+        status: "awaiting_transfer",
+        note: "Awaiting wire transfer confirmation from customer",
         authorized_at: new Date().toISOString(),
       },
     }
