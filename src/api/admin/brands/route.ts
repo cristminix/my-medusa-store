@@ -17,7 +17,7 @@ export const POST = async (
 };
 
 export const GET = async (
-    req: AuthenticatedMedusaRequest<PostAdminCreateBrandType>,
+    req: AuthenticatedMedusaRequest,
     res: MedusaResponse,
 ) => {
     const query = req.scope.resolve("query");
