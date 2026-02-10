@@ -4,9 +4,13 @@ import {
     MedusaRequest,
     MedusaResponse,
     validateAndTransformBody,
+    validateAndTransformQuery,
 } from "@medusajs/framework/http";
 import { Modules } from "@medusajs/framework/utils";
-import { PostAdminCreateBrand } from "./admin/brands/validators";
+import {
+    PostAdminCreateBrand,
+    GetAdminBrandsParams,
+} from "./admin/brands/validators";
 import { z } from "@medusajs/framework/zod";
 export default defineMiddlewares({
     routes: [
@@ -16,6 +20,16 @@ export default defineMiddlewares({
             additionalDataValidator: {
                 brand_id: z.string().optional(),
             },
+        },
+        {
+            matcher: "/admin/brands",
+            method: "GET",
+            middlewares: [
+                validateAndTransformQuery(GetAdminBrandsParams, {
+                    defaults: ["id", "name", "products.*"],
+                    isList: true,
+                }),
+            ],
         },
         {
             matcher: "/admin/brands",

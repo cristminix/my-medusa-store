@@ -15,3 +15,21 @@ export const POST = async (
     });
     res.json({ brand: result });
 };
+
+export const GET = async (
+    req: AuthenticatedMedusaRequest<PostAdminCreateBrandType>,
+    res: MedusaResponse,
+) => {
+    const query = req.scope.resolve("query");
+    const { data: brands, metadata } = await query.graph({
+        entity: "brand",
+        ...req.queryConfig,
+    });
+
+    res.json({
+        brands,
+        count: metadata?.count,
+        offset: metadata?.skip,
+        limit: metadata?.take,
+    });
+};
