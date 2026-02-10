@@ -8,6 +8,7 @@ import {
   FulfillmentOption,
   FulfillmentOrderDTO,
   Logger,
+  CreateShippingOptionDTO,
 } from "@medusajs/framework/types"
 
 type InternalShippingOptions = {
@@ -68,7 +69,7 @@ class InternalShippingProviderService extends AbstractFulfillmentProviderService
     return true
   }
 
-  async canCalculate(data: Record<string, unknown>): Promise<boolean> {
+  async canCalculate(data: CreateShippingOptionDTO): Promise<boolean> {
     return true
   }
 
@@ -80,9 +81,9 @@ class InternalShippingProviderService extends AbstractFulfillmentProviderService
     const items = context.items || []
 
     // Calculate total weight from all items (weight in grams, convert to kg)
-    const totalWeightGrams = items.reduce((sum, item) => {
+    const totalWeightGrams = (items as any[]).reduce((sum, item) => {
       const weight = (item.variant?.weight as number) || 0
-      const quantity = item.quantity || 1
+      const quantity = (item.quantity as number) || 1
       return sum + weight * quantity
     }, 0)
 
@@ -125,7 +126,7 @@ class InternalShippingProviderService extends AbstractFulfillmentProviderService
 
     return {
       data: {
-        ...(fulfillment.data as object || {}),
+        ...data,
         tracking_number: trackingNumber,
       },
       labels: [],
@@ -139,10 +140,13 @@ class InternalShippingProviderService extends AbstractFulfillmentProviderService
 
   async createReturnFulfillment(
     fulfillment: Record<string, unknown>
-  ): Promise<Record<string, unknown>> {
+  ): Promise<CreateFulfillmentResult> {
     // Return a simple return tracking
     return {
-      tracking_number: `RET-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+      data: {
+        tracking_number: `RET-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+      },
+      labels: [],
     }
   }
 }
