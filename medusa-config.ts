@@ -7,19 +7,19 @@ module.exports = defineConfig({
         backendUrl: process.env.MEDUSA_BACKEND_URL || "http://localhost:9000",
         storefrontUrl:
             process.env.MEDUSA_STOREFRONT_URL || "http://localhost:8000",
-        // vite: (config) => {
-        //   return {
-        //     ...config,
-        //     server: {
-        //       ...config.server,
-        //       allowedHosts: ["pawon"],
-        //     },
-        //   }
-        // },
     },
     projectConfig: {
         redisUrl: process.env.REDIS_URL,
         databaseUrl: process.env.DATABASE_URL,
+        databaseDriverOptions: {
+            connection: {
+                ssl: false, // Matikan SSL secara eksplisit
+            },
+        },
+        cookieOptions: {
+            sameSite: "lax",
+            secure: false,
+        },
         http: {
             storeCors: process.env.STORE_CORS!,
             adminCors: process.env.ADMIN_CORS!,
@@ -32,20 +32,21 @@ module.exports = defineConfig({
         {
             resolve: "./src/modules/brand",
         },
-        // {
-        //     resolve: "@medusajs/medusa/file",
-        //     options: {
-        //         providers: [
-        //             {
-        //                 resolve: "@medusajs/medusa/file-local",
-        //                 id: "local",
-        //                 options: {
-        //                     backend_url: process.env.MEDUSA_BACKEND_URL,
-        //                 },
-        //             },
-        //         ],
-        //     },
-        // },
+        {
+            resolve: "@medusajs/medusa/file",
+            options: {
+                providers: [
+                    {
+                        resolve: "@medusajs/medusa/file-local",
+                        id: "local",
+                        options: {
+                            backend_url:
+                                process.env.MEDUSA_BACKEND_URL + "/static/",
+                        },
+                    },
+                ],
+            },
+        },
         {
             resolve: "@medusajs/medusa/notification",
             options: {

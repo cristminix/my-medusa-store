@@ -1,0 +1,73 @@
+services:
+    # PostgreSQL Database
+    postgres:
+        image: postgres:16-alpine
+        container_name: toko_pawon_db
+        restart: unless-stopped
+        environment:
+            POSTGRES_DB: pawon_store # Gunakan underscore jika ada masalah dengan strip pada DB name
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: biksutong
+        ports:
+            - "5439:5432" # Akses dari luar via 5439, tapi internal tetap 5432
+        volumes:
+            - ./pg_data:/var/lib/postgresql/data
+        networks:
+            - toko_pawon_network
+
+    # Redis
+    redis:
+        image: redis:7-alpine
+        container_name: toko_pawon_redis
+        restart: unless-stopped
+        ports:
+            - "6389:6379" # Akses dari luar via 6389, internal tetap 6379
+        networks:
+            - toko_pawon_network
+
+    # Medusa Server
+    medusa:
+        build: .
+        container_name: pawon_store_backend
+        restart: unless-stopped
+        depends_on:
+            - postgres
+            - redis
+        ports:
+            - "9001:9000"
+            - "5174:5173"
+        environment:
+            - NODE_ENV=production
+            # PERBAIKAN: Gunakan nama service 'postgres' dan port internal 5432
+            - DATABASE_URL=postgres://postgres:biksutong@postgres:5432/pawon_store
+            # PERBAIKAN: Gunakan nama service 'redis' dan port internal 6379
+            - REDIS_URL=redis://redis:6379
+            - MEDUSA_ADMIN_ONBOARDING_TYPE=default
+            - STORE_CORS=http://148.230.96.242:9001,http://store.pawon.cloud,http://localhost:8001,https://docs.medusajs.com
+            - ADMIN_CORS=http://148.230.96.242:9001,http://store.pawon.cloud,http://localhost:5174,http://localhost:9001,https://docs.medusajs.com
+            - AUTH_CORS=http://148.230.96.242:9001,http://toko.pawon.cloud,http://store.pawon.cloud,http://localhost:5174,http://localhost:9001,http://localhost:8001,https://docs.medusajs.com
+            - JWT_SECRET=berisi-adalah-kosong-kosong-adalah-berisi
+            - COOKIE_SECRET=berisi-adalah-kosong-kosong-adalah-berisi
+            - RESEND_API_KEY=re_icwzuwRd_GwfKwyLNxuVLPSa4jv97LJ8L
+            - RESEND_FROM_EMAIL=Toko Pawon <noreply@pawon.cloud>
+            - RAJAONGKIR_API_KEY=kxl3wcHt10b02fa9415179e1wcplkH4a
+            - MIDTRANS_MERCHANT_ID=G990270318
+            - MIDTRANS_SANDBOX_CLIENT_KEY=Mid-client-2F7m-Pp6PVhRxWbi
+            - MIDTRANS_SANDBOX_SERVER_KEY=Mid-server-eFAIekao8ov3uD3rFztp48Md
+            - INTERNAL_SHIPPING_COORDINAT=-6.3182623,106.5927411
+            - INTERNAL_SHIPPING_COST_PERKILO=5000
+            - MEDUSA_BACKEND_URL=http://148.230.96.242:9001
+            - MEDUSA_BACKEND_URLS=http://148.230.96.242:8001
+            - MEDUSA_STOREFRONT_URL=http://toko.pawon.cloud
+            - MEDUSA_STOREFRONT_URLS=http://toko.pawon.cloud
+        env_file:
+            - .env
+        volumes:
+            - .:/server
+            - /server/node_modules # Anonymous volume agar node_modules host tidak menimpa container
+        networks:
+            - toko_pawon_network
+
+networks:
+    toko_pawon_network:
+        driver: bridge

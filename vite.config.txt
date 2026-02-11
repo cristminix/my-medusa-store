@@ -1,0 +1,12 @@
+// vite.config.ts
+export default defineConfig({
+    server: {
+        host: "0.0.0.0",
+        port: 9001, // Port Admin kamu
+        hmr: {
+            host: "148.230.96.242", // IP VPS kamu
+            clientPort: 2024, // Paksa client koneksi ke port yang sama dengan web
+        },
+        allowedHosts: ["store.pawon.cloud", "148.230.96.242"],
+    },
+});
