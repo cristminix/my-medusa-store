@@ -5,6 +5,7 @@ import {
     MedusaResponse,
     validateAndTransformBody,
     validateAndTransformQuery,
+    authenticate,
 } from "@medusajs/framework/http";
 import { Modules } from "@medusajs/framework/utils";
 import {
@@ -12,18 +13,38 @@ import {
     GetAdminBrandsParams,
 } from "./admin/brands/validators";
 import { z } from "@medusajs/framework/zod";
+import multer from "multer";
+
+const upload = multer({ storage: multer.memoryStorage() });
+
 export default defineMiddlewares({
     routes: [
         {
+            matcher: "/store/uploads",
+            method: ["POST"],
+            bodyParser: false,
+            middlewares: [
+                authenticate("customer", ["session", "bearer"]), // Hanya customer login yang bisa akses
+                upload.array("files"),
+            ],
+        },
+        {
+            matcher: "/store/orders/:id/metadata",
+            method: ["POST"],
+            middlewares: [
+                authenticate("customer", ["session", "bearer"]), // Proteksi endpoint metadata
+            ],
+        },
+        {
             matcher: "/admin/products",
-            method: "POST",
+            method: ["POST"],
             additionalDataValidator: {
                 brand_id: z.string().optional(),
             },
         },
         {
             matcher: "/admin/brands",
-            method: "GET",
+            method: ["GET"],
             middlewares: [
                 validateAndTransformQuery(GetAdminBrandsParams, {
                     defaults: ["id", "name", "products.*"],
@@ -33,7 +54,7 @@ export default defineMiddlewares({
         },
         {
             matcher: "/admin/brands",
-            method: "POST",
+            method: ["POST"],
             middlewares: [validateAndTransformBody(PostAdminCreateBrand)],
         },
         {
