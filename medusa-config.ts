@@ -105,14 +105,15 @@ module.exports = defineConfig({
                                 "Bank Central Asia",
                             account_number:
                                 process.env.WIRE_TRANSFER_ACCOUNT_NUMBER ||
-                                "1234567890",
+                                "507 505 4278",
                             account_holder:
                                 process.env.WIRE_TRANSFER_ACCOUNT_HOLDER ||
-                                "PT Your Company",
+                                "PT PAWON GEMILANG RASA",
                             // Optional: SWIFT code for international transfers
                             // swift_code: "CENAIDJA",
                             // Optional: Additional instructions
-                            // instructions: "Please include your order number in the transfer description",
+                            instructions:
+                                "Silahkan masukkan nomor pesanan Anda dalam deskripsi transfer",
                         },
                     },
                 ],
