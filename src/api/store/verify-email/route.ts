@@ -35,7 +35,8 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
         },
     });
 
-    const storefrontUrl = "http://148.230.96.242:8001"; // config.admin?.storefrontUrl || "http://localhost:8000"
+    const storefrontUrl =
+        process.env.MEDUSA_STOREFRONT_URL || "http://148.230.96.242:8001";
     const verificationUrl = `${storefrontUrl}/verify-email?token=${token}&email=${customer.email}`;
 
     await notificationModuleService.createNotifications({
