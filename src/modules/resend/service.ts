@@ -1,117 +1,119 @@
 import {
-  AbstractNotificationProviderService,
-  MedusaError,
-} from "@medusajs/framework/utils"
+    AbstractNotificationProviderService,
+    MedusaError,
+} from "@medusajs/framework/utils";
 import {
-  Logger,
-  ProviderSendNotificationDTO,
-  ProviderSendNotificationResultsDTO,
-} from "@medusajs/framework/types"
-import { Resend } from "resend"
+    Logger,
+    ProviderSendNotificationDTO,
+    ProviderSendNotificationResultsDTO,
+} from "@medusajs/framework/types";
+import { Resend } from "resend";
 
 type ResendOptions = {
-  api_key: string
-  from: string
-}
+    api_key: string;
+    from: string;
+};
 
 type InjectedDependencies = {
-  logger: Logger
-}
+    logger: Logger;
+};
 
 class ResendNotificationProviderService extends AbstractNotificationProviderService {
-  static identifier = "notification-resend"
-  private resendClient: Resend
-  private options: ResendOptions
-  private logger: Logger
+    static identifier = "notification-resend";
+    private resendClient: Resend;
+    private options: ResendOptions;
+    private logger: Logger;
 
-  constructor({ logger }: InjectedDependencies, options: ResendOptions) {
-    super()
-    this.resendClient = new Resend(options.api_key)
-    this.options = options
-    this.logger = logger
-  }
-
-  async send(
-    notification: ProviderSendNotificationDTO
-  ): Promise<ProviderSendNotificationResultsDTO> {
-    const { to, template, data, content } = notification
-
-    // Use content.html if provided, otherwise generate from template
-    let html: string
-    let subject: string
-
-    if (content?.html) {
-      html = content.html
-      subject = content.subject || "Notification"
-    } else {
-      // Default templates based on template name
-      const templateData = this.getTemplate(template, data || {})
-      html = templateData.html
-      subject = templateData.subject
+    constructor({ logger }: InjectedDependencies, options: ResendOptions) {
+        super();
+        this.resendClient = new Resend(options.api_key);
+        this.options = options;
+        this.logger = logger;
     }
 
-    const { data: result, error } = await this.resendClient.emails.send({
-      from: this.options.from,
-      to: [to],
-      subject,
-      html,
-    })
+    async send(
+        notification: ProviderSendNotificationDTO,
+    ): Promise<ProviderSendNotificationResultsDTO> {
+        const { to, template, data, content } = notification;
 
-    if (error || !result) {
-      this.logger.error("Failed to send email", error)
-      throw new MedusaError(
-        MedusaError.Types.UNEXPECTED_STATE,
-        `Failed to send email: ${error?.message || "Unknown error"}`
-      )
+        // Use content.html if provided, otherwise generate from template
+        let html: string;
+        let subject: string;
+
+        if (content?.html) {
+            html = content.html;
+            subject = content.subject || "Notification";
+        } else {
+            // Default templates based on template name
+            const templateData = this.getTemplate(template, data || {});
+            html = templateData.html;
+            subject = templateData.subject;
+        }
+
+        const { data: result, error } = await this.resendClient.emails.send({
+            from: this.options.from,
+            to: [to],
+            subject,
+            html,
+        });
+
+        if (error || !result) {
+            this.logger.error("Failed to send email", error);
+            throw new MedusaError(
+                MedusaError.Types.UNEXPECTED_STATE,
+                `Failed to send email: ${error?.message || "Unknown error"}`,
+            );
+        }
+
+        return { id: result.id };
     }
 
-    return { id: result.id }
-  }
-
-  private getTemplate(
-    template: string,
-    data: Record<string, unknown>
-  ): { html: string; subject: string } {
-    switch (template) {
-      case "password-reset":
-        return {
-          subject: "Reset Your Password",
-          html: this.getPasswordResetTemplate(data),
-        }
-      case "email-verification":
-        return {
-          subject: "Verifikasi Email Anda",
-          html: this.getEmailVerificationTemplate(data),
-        }
-      default:
-        return {
-          subject: "Notification",
-          html: `<p>${JSON.stringify(data)}</p>`,
+    private getTemplate(
+        template: string,
+        data: Record<string, unknown>,
+    ): { html: string; subject: string } {
+        switch (template) {
+            case "password-reset":
+                return {
+                    subject: "Reset Your Password",
+                    html: this.getPasswordResetTemplate(data),
+                };
+            case "email-verification":
+                return {
+                    subject: "Verifikasi Email Anda",
+                    html: this.getEmailVerificationTemplate(data),
+                };
+            default:
+                return {
+                    subject: "Notification",
+                    html: `<p>${JSON.stringify(data)}</p>`,
+                };
         }
     }
-  }
 
-  private getEmailVerificationTemplate(data: Record<string, unknown>): string {
-    const verificationUrl = data.verification_url as string
-    return `
+    private getEmailVerificationTemplate(
+        data: Record<string, unknown>,
+    ): string {
+        const verificationUrl = data.verification_url as string;
+        return `
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Verifikasi Email Anda</title>
+  <title>Verifikasi Akun Anda</title>
 </head>
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5; margin: 0; padding: 20px;">
   <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; padding: 40px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
     <h1 style="color: #1a1a1a; font-size: 24px; margin-bottom: 24px; text-align: center;">
-      Verifikasi Email Anda
+      Verifikasi Akun Anda
     </h1>
     <p style="color: #4a4a4a; font-size: 16px; line-height: 1.6; margin-bottom: 24px;">
       Terima kasih telah mendaftar. Silakan klik tombol di bawah ini untuk memverifikasi alamat email Anda:
     </p>
     <div style="text-align: center; margin-bottom: 24px;">
       <a href="${verificationUrl}" style="display: inline-block; background-color: #000000; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 6px; font-size: 16px; font-weight: 500;">
-        Verifikasi Email
+        Verifikasi Akun Anda
       </a>
     </div>
     <p style="color: #6a6a6a; font-size: 14px; line-height: 1.6;">
@@ -124,12 +126,12 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
   </div>
 </body>
 </html>
-`
-  }
+`;
+    }
 
-  private getPasswordResetTemplate(data: Record<string, unknown>): string {
-    const resetUrl = data.reset_url as string
-    return `
+    private getPasswordResetTemplate(data: Record<string, unknown>): string {
+        const resetUrl = data.reset_url as string;
+        return `
 <!DOCTYPE html>
 <html>
 <head>
@@ -160,8 +162,8 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
   </div>
 </body>
 </html>
-`
-  }
+`;
+    }
 }
 
-export default ResendNotificationProviderService
+export default ResendNotificationProviderService;
