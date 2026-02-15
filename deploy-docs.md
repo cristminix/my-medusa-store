@@ -3,7 +3,7 @@ npx medusa build
 PWD=`pwd`
 cd .medusa/server
 cp ../../.env .env.production
-cp -r ../../static .medusa/server/
+cp -r ../../static .
 
 cp -r ../../../server_node_modules.bak node_modules
 cd "$PWD"
